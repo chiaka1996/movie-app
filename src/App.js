@@ -1,25 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
+import Search from './components/Search';
+import axios from 'axios';
+import Results from './components/Results';
+import Popup from './components/Popup';
+
 
 function App() {
+  const [state, setState] = useState({
+    s: "",
+    results: [],
+    selected: {},
+    popStat: false
+  });
+
+  const apiurl = "http://www.omdbapi.com/?apikey=7231ebbf";
+  
+  const movieSearch = (e) => {
+    if(e.key === "Enter"){
+      axios(apiurl + "&s=" + state.s).then(({data}) => {
+        let results = data.Search;
+          console.log(data);      
+        setState(prevState => {
+          return {...prevState, results:results}
+        })
+  
+      });
+    }
+  }
+
+  const openPopup = (res) => {
+    setState(prevState => {
+      return{
+        ...prevState,
+        selected:res,
+        popStat: true
+      }
+    })
+    console.log(state.selected)
+  }
+  
+
+
+  const handleInput = (e) => {
+    let s = e.target.value;
+
+    setState(prevState => {
+      return{...prevState, s: s }
+    });
+    console.log(state.s);
+  }
   return (
-    <div className="App">
+    state.popStat===true ? <Popup selected={state.selected} /> :
+      <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+        <h1>Movie Database</h1>
+        </header>
+    <main>
+        <Search 
+        handleInput = {handleInput}
+        movieSearch = {movieSearch}
+        />
+        <Results results={state.results} openPopup ={openPopup} />
+        
+      </main>
+    </div> 
+   
   );
 }
 
