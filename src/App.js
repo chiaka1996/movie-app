@@ -18,8 +18,7 @@ function App() {
   const movieSearch = (e) => {
     if(e.key === "Enter"){
       axios(apiurl + "&s=" + state.s).then(({data}) => {
-        let results = data.Search;
-          console.log(data);      
+        let results = data.Search;     
         setState(prevState => {
           return {...prevState, results:results}
         })
@@ -36,7 +35,6 @@ function App() {
         popStat: true
       }
     })
-    console.log(state.selected)
   }
   
 
@@ -47,7 +45,6 @@ function App() {
     setState(prevState => {
       return{...prevState, s: s }
     });
-    console.log(state.s);
   }
   return (
     state.popStat===true ? <Popup selected={state.selected} /> :
